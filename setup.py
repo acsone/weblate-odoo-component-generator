@@ -14,7 +14,10 @@ setup(
     use_scm_version=True,
     packages=find_packages(),
     install_requires=[
-        'Weblate',
+        "Weblate",
+        # weblate django dep not detected properly?
+        "Django>=1.11,<2.0; python_version < '3.0",
+        "Django>=1.11; python_version >= '3.0'",
     ],
     license='GPLv3+',
     classifiers=[
