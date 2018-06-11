@@ -30,18 +30,18 @@ FILEMASK_RE = re.compile(
 
 def _get_main_component(project):
     main_component = False
-    for sub_project in project.component_set.all():
-        if GIT_URL_RE.match(sub_project.repo):
-            main_component = sub_project
+    for component in project.component_set.all():
+        if GIT_URL_RE.match(component.repo):
+            main_component = component
             break
     return main_component
 
 
 def _get_all_components_slug(project):
-    sub_projects_slug = []
-    for sub_project in project.component_set.all():
-        sub_projects_slug.append(sub_project.slug)
-    return sub_projects_slug
+    components_slug = []
+    for component in project.component_set.all():
+        components_slug.append(component.slug)
+    return components_slug
 
 
 def _get_slug_name(project, addon):
@@ -75,12 +75,12 @@ def main():
         addons_dir = groups['addons_dir'] or '.'
         addons_dir_path = os.path.join(
             svn_dir, project.slug, main_component.slug, addons_dir)
-        existing_sub_projects_slug = _get_all_components_slug(project)
+        existing_components_slug = _get_all_components_slug(project)
         addons = get_translatable_addons(addons_dirs=[addons_dir_path])
         main_filemask = main_component.filemask
         for addon, addon_dir in addons.items():
             addon_component_slug = _get_slug_name(project, addon)
-            if addon_component_slug in existing_sub_projects_slug:
+            if addon_component_slug in existing_components_slug:
                 logger.info('component already exist for addon %s : %s' % (
                     addon, addon_component_slug))
                 continue
