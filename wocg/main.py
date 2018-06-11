@@ -44,7 +44,11 @@ def _get_all_components_slug(project):
     return components_slug
 
 
-def _get_slug_name(project, addon):
+def _get_component_name(project, addon):
+    return "%s-%s" % (project.name, addon)
+
+
+def _get_component_slug(project, addon):
     return "%s-%s" % (project.slug, addon)
 
 
@@ -79,7 +83,8 @@ def main():
         addons = get_translatable_addons(addons_dirs=[addons_dir_path])
         main_filemask = main_component.filemask
         for addon, addon_dir in addons.items():
-            addon_component_slug = _get_slug_name(project, addon)
+            addon_component_name = _get_component_name(project, addon)
+            addon_component_slug = _get_component_slug(project, addon)
             if addon_component_slug in existing_components_slug:
                 logger.info('component already exist for addon %s : %s' % (
                     addon, addon_component_slug))
