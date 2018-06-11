@@ -13,10 +13,8 @@ setup(
     )),
     use_scm_version=True,
     packages=find_packages(),
-    include_package_data=True,
     install_requires=[
-        'Weblate==2.18',
-        'Django==1.11.8',
+        'Weblate',
     ],
     license='GPLv3+',
     classifiers=[
@@ -25,11 +23,10 @@ setup(
         'License :: OSI Approved :: '
         'GNU General Public License v3 or later (GPLv3+)',
         'Operating System :: POSIX',
-        'Programming Language :: Python :: 2.7',
-        'Framework :: Django :: 1.11',
+        'Programming Language :: Python',
+        'Framework :: Django',
     ],
     setup_requires=[
-        'setuptools-git',
         'setuptools-scm',
     ],
     entry_points='''
