@@ -3,10 +3,10 @@
 
 from wocg.tools.git_utils import git_clone
 from wocg.tools.helper import get_component_slug, get_component_name
+from wocg.tools.logger import get_logger
 from wocg.tools.manifest import get_translatable_addons
 
 import click
-import logging
 import os
 import re
 import django
@@ -14,7 +14,7 @@ django.setup()
 
 from weblate.trans.models import Project, Component
 
-_logger = logging.getLogger()
+logger = get_logger()
 
 
 def get_project_name(repository, branch):
@@ -27,21 +27,21 @@ def create_project(
         repository, branch, tmpl_component_slug, addons_sub_directory=None):
     project_name = get_project_name(repository, branch)
 
-    _logger.info("Project name is %s" % project_name)
+    logger.info("Project name is %s" % project_name)
 
     try:
         Project.objects.get(name=project_name)
-        _logger.info("Project %s already exists." % project_name)
+        logger.info("Project %s already exists." % project_name)
     except Project.DoesNotExist:
         repo_dir = git_clone(repository, branch)
         addons = get_translatable_addons(
             repo_dir, addons_sub_directory=addons_sub_directory)
 
         if not addons:
-            _logger.info("No addons found in %s %s" % (repository, branch))
+            logger.info("No addons found in %s %s" % (repository, branch))
             return
 
-        _logger.info("Going to create Project %s." % project_name)
+        logger.info("Going to create Project %s." % project_name)
         addon_name = addons.keys()[0]
         new_project = get_new_project(project_name, repository)
 
@@ -51,7 +51,7 @@ def create_project(
                 tmpl_component_slug,
                 addons_sub_directory=addons_sub_directory)
         except Exception as e:
-            _logger.exception(e)
+            logger.exception(e)
             new_project.delete()
 
 

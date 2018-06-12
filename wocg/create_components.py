@@ -3,10 +3,10 @@
 
 from .tools.manifest import get_translatable_addons
 from .tools.helper import get_component_name, get_component_slug
+from .tools.logger import get_logger
 
 import os
 import re
-import logging
 import django
 django.setup()
 
@@ -14,18 +14,12 @@ from django.conf import settings
 from weblate.trans.models import Project
 
 
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-ch = logging.StreamHandler()
-ch.setLevel(logging.INFO)
-ch.setFormatter(logging.Formatter(
-    '%(asctime)s - %(levelname)s - WOCG : %(message)s'))
-logger.addHandler(ch)
-
 GIT_URL_RE = re.compile(r"git@.*:.*/.*")
 
 FILEMASK_RE = re.compile(
     r"^(?P<addons_dir>.*/)?(?P<addon_name>.*?)/i18n/\*\.po$")
+
+logger = get_logger()
 
 
 def _get_main_component(project):

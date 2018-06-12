@@ -32,7 +32,7 @@ setup(
     ],
     entry_points='''
         [console_scripts]
-        wocg=wocg.main:main
+        wocg-create-components=wocg.create_components:main
         wocg-create-project=wocg.create_project:main
     ''',
 )
