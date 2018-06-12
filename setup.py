@@ -15,6 +15,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         # "Weblate",
+        'click',
     ],
     license='GPLv3+',
     classifiers=[
@@ -27,10 +28,7 @@ setup(
         'Framework :: Django',
     ],
     setup_requires=[
-        'click',
-        'django',
         'setuptools-scm',
-        'weblate',
     ],
     entry_points='''
         [console_scripts]
