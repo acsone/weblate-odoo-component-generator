@@ -76,7 +76,7 @@ def get_new_component(
         pot_filepath = os.path.join(addons_sub_directory, pot_filepath)
     tmpl_component = Component.objects.get(slug=tmpl_component_slug)
     new_component = tmpl_component
-    new_component.pk = False
+    new_component.pk = None
     new_component.project = project
     new_component.name = get_component_slug(project, addon_name)
     new_component.slug = get_component_name(project, addon_name)
