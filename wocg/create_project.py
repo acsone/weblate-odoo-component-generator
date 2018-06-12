@@ -3,7 +3,7 @@
 
 from wocg.tools.git_utils import git_clone
 from wocg.tools.helper import get_component_slug, get_component_name
-from wocg.tools.manifest import get_installable_addons
+from wocg.tools.manifest import get_translatable_addons
 
 import click
 import logging
@@ -34,7 +34,7 @@ def create_project(
         _logger.info("Project %s already exists." % project_name)
     except Project.DoesNotExist:
         repo_dir = git_clone(repository, branch)
-        addons = get_installable_addons(
+        addons = get_translatable_addons(
             repo_dir, addons_sub_directory=addons_sub_directory)
 
         if not addons:

@@ -72,10 +72,10 @@ def main():
         addons_dir_path = os.path.join(
             svn_dir, project.slug, main_component.slug, addons_dir)
         existing_components_slug = _get_all_components_slug(project)
-        addons = get_translatable_addons(addons_dirs=[addons_dir_path])
+        addons = get_translatable_addons(addons_dir_path)
         main_filemask = main_component.filemask
         main_new_base = main_component.new_base
-        for addon, addon_dir in addons.items():
+        for addon in addons.keys():
             addon_component_name = get_component_name(project, addon)
             addon_component_slug = get_component_slug(project, addon)
             if addon_component_slug in existing_components_slug:
