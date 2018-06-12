@@ -82,6 +82,8 @@ def main():
             logger.info('New filemask %s' % filemask)
             new_component = main_component
             new_component.pk = None
+            new_component.git_export = ''
+            new_component.push = ''
             new_component.name = addon_component_name
             new_component.slug = addon_component_slug
             new_component.filemask = filemask
