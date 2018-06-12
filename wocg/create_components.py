@@ -5,6 +5,7 @@ from .tools.manifest import get_translatable_addons
 from .tools.helper import get_component_name, get_component_slug
 from .tools.logger import get_logger
 
+import click
 import os
 import re
 import django
@@ -38,7 +39,13 @@ def _get_all_components_slug(project):
     return components_slug
 
 
+@click.command()
 def main():
+    """
+    This program create the missing components for all projects in Weblate.
+    A component will be created only if the related addon is installable
+    and contains a .pot file.
+    """
     all_projects = Project.objects.prefetch_related('source_language')
 
     data_dir = settings.DATA_DIR
