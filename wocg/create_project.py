@@ -19,8 +19,12 @@ logger = get_logger()
 
 def get_project_name(repository, branch):
     repo_name = repository.split('/')[-1].replace('.git', '')
-    sanitized_branch_name = re.sub(r'[.]', '-', branch)
-    return '%s-%s' % (repo_name, sanitized_branch_name)
+    return '%s-%s' % (repo_name, branch)
+
+
+def get_project_slug(project_name):
+    project_slug = re.sub("[^A-Za-z0-9-]", "-", project_name)
+    return project_slug
 
 
 def create_project(
@@ -58,7 +62,7 @@ def create_project(
 def get_new_project(project_name, url):
     new_project = Project()
     new_project.name = project_name
-    new_project.slug = project_name
+    new_project.slug = get_project_slug(project_name)
     new_project.web = url
     new_project.enable_review = True
     new_project.save()
