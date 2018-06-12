@@ -18,18 +18,18 @@ def parse_manifest(s):
     return ast.literal_eval(s)
 
 
-def get_translatable_addons(repository_dir, addons_sub_directory=None):
+def get_translatable_addons(repository_dir, addons_subdirectory=None):
     """
     This method builds a dictionary of all installable addons which contains a
     i18n folder with a .pot file in the specified
     addons directory or in the default addons directory.
     :param repository_dir: path to the git repository
-    :param addons_sub_directory: path to the addons directory
+    :param addons_subdirectory: path to the addons directory
     :return: Dictionary like: {'addon_name': (addons_directory, manifest)}
     where manifest is a dictionary.
     """
     res = {}
-    addons_dir = os.path.join(repository_dir, addons_sub_directory or '')
+    addons_dir = os.path.join(repository_dir, addons_subdirectory or '')
     for addon_name in os.listdir(addons_dir):
         addon_dir = os.path.join(addons_dir, addon_name)
         manifest_path = get_manifest_path(addon_dir)

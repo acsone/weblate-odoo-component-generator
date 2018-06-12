@@ -78,7 +78,7 @@ def main():
                 continue
             logger.info('Begin generation for addon %s' % addon)
             filemask = main_filemask.replace(main_component_addon_name, addon)
-            base_file = main_new_base.replace(main_component_addon_name, addon)
+            new_base = main_new_base.replace(main_component_addon_name, addon)
             logger.info('New filemask %s' % filemask)
             new_component = main_component
             new_component.pk = None
@@ -87,7 +87,7 @@ def main():
             new_component.name = addon_component_name
             new_component.slug = addon_component_slug
             new_component.filemask = filemask
-            new_component.new_base = base_file
+            new_component.new_base = new_base
             new_component.repo = repo
             new_component.save()
     exit(0)
