@@ -27,10 +27,14 @@ setup(
         'Framework :: Django',
     ],
     setup_requires=[
+        'click',
+        'django',
         'setuptools-scm',
+        'weblate',
     ],
     entry_points='''
         [console_scripts]
         wocg=wocg.main:main
+        wocg-create-project=wocg.create_project:main
     ''',
 )
