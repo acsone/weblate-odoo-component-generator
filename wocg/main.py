@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 # Copyright 2018 ACSONE SA/NV (<http://acsone.eu>)
 
-import django
-django.setup()
+from .tools.manifest import get_translatable_addons
+from .tools.helper import get_component_name, get_component_slug
 
 import os
 import re
 import logging
+import django
+django.setup()
 
 from django.conf import settings
 from weblate.trans.models import Project
-
-from .manifest import get_translatable_addons
 
 
 logger = logging.getLogger()
@@ -44,14 +44,6 @@ def _get_all_components_slug(project):
     return components_slug
 
 
-def _get_component_name(project, addon):
-    return "%s-%s" % (project.name, addon)
-
-
-def _get_component_slug(project, addon):
-    return "%s-%s" % (project.slug, addon)
-
-
 def main():
     all_projects = Project.objects.prefetch_related('source_language')
 
@@ -82,21 +74,24 @@ def main():
         existing_components_slug = _get_all_components_slug(project)
         addons = get_translatable_addons(addons_dirs=[addons_dir_path])
         main_filemask = main_component.filemask
+        main_new_base = main_component.new_base
         for addon, addon_dir in addons.items():
-            addon_component_name = _get_component_name(project, addon)
-            addon_component_slug = _get_component_slug(project, addon)
+            addon_component_name = get_component_name(project, addon)
+            addon_component_slug = get_component_slug(project, addon)
             if addon_component_slug in existing_components_slug:
                 logger.info('component already exist for addon %s : %s' % (
                     addon, addon_component_slug))
                 continue
             logger.info('Begin generation for addon %s' % addon)
             filemask = main_filemask.replace(main_component_addon_name, addon)
+            base_file = main_new_base.replace(main_component_addon_name, addon)
             logger.info('New filemask %s' % filemask)
             new_component = main_component
             new_component.pk = None
             new_component.name = addon_component_name
             new_component.slug = addon_component_slug
             new_component.filemask = filemask
+            new_component.new_base = base_file
             new_component.repo = repo
             new_component.save()
     exit(0)
