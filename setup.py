@@ -16,6 +16,7 @@ setup(
     install_requires=[
         # "Weblate",
         'click',
+        'giturlparse',
     ],
     license='GPLv3+',
     classifiers=[

@@ -6,7 +6,6 @@ import logging
 
 def get_logger():
     logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
     ch = logging.StreamHandler()
     ch.setLevel(logging.INFO)
     ch.setFormatter(logging.Formatter(
