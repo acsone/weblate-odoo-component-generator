@@ -7,6 +7,7 @@ from wocg.tools.logger import get_logger
 from wocg.tools.manifest import get_translatable_addons
 
 import click
+import giturlparse
 import os
 import re
 import django
@@ -60,11 +61,11 @@ def create_project(
             new_project.delete()
 
 
-def get_new_project(project_name, url):
+def get_new_project(project_name, repository):
     new_project = Project()
     new_project.name = project_name
     new_project.slug = get_project_slug(project_name)
-    new_project.web = url
+    new_project.web = giturlparse.parse(repository).url2https
     new_project.enable_review = True
     new_project.set_translation_team = False
     new_project.save()
@@ -82,14 +83,15 @@ def get_new_component(
         pot_filepath = os.path.join(addons_subdirectory, pot_filepath)
     tmpl_component = Component.objects.get(slug=tmpl_component_slug)
     addons_to_install = Addon.objects.filter(component=tmpl_component)
+    parsed_repository_uri = giturlparse.parse(repository)
 
     new_component = tmpl_component
     new_component.pk = None
     new_component.project = project
     new_component.name = get_component_slug(project, addon_name)
     new_component.slug = get_component_name(project, addon_name)
-    new_component.repo = repository
-    new_component.push = repository
+    new_component.repo = parsed_repository_uri.url2ssh
+    new_component.push = parsed_repository_uri.url2ssh
     new_component.branch = branch
     new_component.filemask = po_file_mask
     new_component.new_base = pot_filepath
