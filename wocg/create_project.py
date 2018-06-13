@@ -12,6 +12,7 @@ import re
 import django
 django.setup()
 
+from weblate.addons.models import Addon
 from weblate.trans.models import Project, Component
 
 logger = get_logger()
@@ -46,7 +47,7 @@ def create_project(
             return
 
         logger.info("Going to create Project %s." % project_name)
-        addon_name = addons.keys()[0]
+        addon_name = next(iter(addons.keys()))
         new_project = get_new_project(project_name, repository)
 
         try:
@@ -65,6 +66,7 @@ def get_new_project(project_name, url):
     new_project.slug = get_project_slug(project_name)
     new_project.web = url
     new_project.enable_review = True
+    new_project.set_translation_team = False
     new_project.save()
     return new_project
 
@@ -79,6 +81,8 @@ def get_new_component(
         po_file_mask = os.path.join(addons_subdirectory, po_file_mask)
         pot_filepath = os.path.join(addons_subdirectory, pot_filepath)
     tmpl_component = Component.objects.get(slug=tmpl_component_slug)
+    addons_to_install = Addon.objects.filter(component=tmpl_component)
+
     new_component = tmpl_component
     new_component.pk = None
     new_component.project = project
@@ -91,6 +95,11 @@ def get_new_component(
     new_component.new_base = pot_filepath
     new_component.file_format = 'po'
     new_component.save(force_insert=True)
+
+    for addon_to_install in addons_to_install:
+        addon_to_install.pk = None
+        addon_to_install.component = new_component
+        addon_to_install.save()
     return new_component
 
 
