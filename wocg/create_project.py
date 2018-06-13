@@ -88,8 +88,8 @@ def get_new_component(
     new_component = tmpl_component
     new_component.pk = None
     new_component.project = project
-    new_component.name = get_component_slug(project, addon_name)
-    new_component.slug = get_component_name(project, addon_name)
+    new_component.name = get_component_name(project, addon_name)
+    new_component.slug = get_component_slug(project, addon_name)
     new_component.repo = parsed_repository_uri.url2ssh
     new_component.push = parsed_repository_uri.url2ssh
     new_component.branch = branch
