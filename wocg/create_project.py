@@ -4,6 +4,7 @@
 
 import os
 import re
+from urlparse import urljoin
 
 import click
 import giturlparse
@@ -33,7 +34,8 @@ def get_project_slug(project_name):
 
 
 def create_project(
-        repository, branch, tmpl_component_slug, addons_subdirectory=None):
+        repository, branch, tmpl_component_slug,
+        addons_subdirectory=None, git_export_base_url=None):
     project_name = get_project_name(repository, branch)
 
     logger.info("Project name is %s", project_name)
@@ -58,7 +60,8 @@ def create_project(
             get_new_component(
                 new_project, repository, branch, addon_name,
                 tmpl_component_slug,
-                addons_subdirectory=addons_subdirectory)
+                addons_subdirectory=addons_subdirectory,
+                git_export_base_url=git_export_base_url)
         except Exception as e:
             logger.exception(e)
             new_project.delete()
@@ -77,13 +80,19 @@ def get_new_project(project_name, repository):
 
 def get_new_component(
         project, repository, branch, addon_name, tmpl_component_slug,
-        addons_subdirectory=None):
+        addons_subdirectory=None, git_export_base_url=None):
     po_file_mask = '{}/i18n/*.po'.format(addon_name)
     pot_filepath = '{addon_name}/i18n/{addon_name}.pot'.format(
         addon_name=addon_name)
+    git_export = ''
     if addons_subdirectory:
         po_file_mask = os.path.join(addons_subdirectory, po_file_mask)
         pot_filepath = os.path.join(addons_subdirectory, pot_filepath)
+    if git_export_base_url:
+        git_export = urljoin(
+            git_export_base_url,
+            os.path.join('git', project.name)
+        )
     tmpl_component = Component.objects.get(slug=tmpl_component_slug)
     addons_to_install = Addon.objects.filter(component=tmpl_component)
     parsed_repository_uri = giturlparse.parse(repository)
@@ -99,6 +108,8 @@ def get_new_component(
     new_component.filemask = po_file_mask
     new_component.new_base = pot_filepath
     new_component.file_format = 'po'
+    new_component.git_export = git_export
+    new_component.locked = False
     new_component.save(force_insert=True)
 
     for addon_to_install in addons_to_install:
@@ -126,7 +137,14 @@ def get_new_component(
     help="Addons subdirectory, in case addons are not "
          "at the root of the project (eg odoo/addons)."
 )
-def main(repository, branch, tmpl_component_slug, addons_subdirectory=None):
+@click.option(
+    '--git-export-base-url',
+    help="Base Url for 'Exported repository URL' component attribute. "
+         "If not provided, the weblate default is used."
+)
+def main(
+        repository, branch, tmpl_component_slug,
+        addons_subdirectory=None, git_export_base_url=None):
     """
     This program initializes a weblate project based on a git repository.
 
@@ -138,4 +156,5 @@ def main(repository, branch, tmpl_component_slug, addons_subdirectory=None):
     """
     create_project(
         repository, branch, tmpl_component_slug,
-        addons_subdirectory=addons_subdirectory)
+        addons_subdirectory=addons_subdirectory,
+        git_export_base_url=git_export_base_url)

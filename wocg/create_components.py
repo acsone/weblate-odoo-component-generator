@@ -110,4 +110,5 @@ def main():
             new_component.filemask = filemask
             new_component.new_base = new_base
             new_component.repo = repo
+            new_component.locked = False
             new_component.save()
