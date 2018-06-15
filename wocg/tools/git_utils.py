@@ -1,19 +1,23 @@
 # -*- coding: utf-8 -*-
 # Copyright 2018 ACSONE SA/NV (<http://acsone.eu>)
 
-import giturlparse
+import contextlib
 import subprocess
 import tempfile
 
+import giturlparse
 
-def git_clone(repository, branch):
+
+@contextlib.contextmanager
+def temp_git_clone(repository, branch):
     repository_https = giturlparse.parse(repository).url2https
-    temp_dir_path = tempfile.mkdtemp()
-    subprocess.check_call([
-        'git',
-        'clone',
-        repository_https,
-        '-b', branch,
-        temp_dir_path,
-    ])
-    return temp_dir_path
+    with tempfile.TemporaryDirectory() as td:
+        subprocess.check_call([
+            'git',
+            'clone',
+            repository_https,
+            '-b', branch,
+            '--depth', '1',
+            td.name,
+        ])
+        yield td.name

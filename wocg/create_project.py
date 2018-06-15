@@ -14,7 +14,7 @@ django.setup()
 from weblate.addons.models import Addon
 from weblate.trans.models import Project, Component
 
-from .tools.git_utils import git_clone
+from .tools.git_utils import temp_git_clone
 from .tools.helper import get_component_slug, get_component_name
 from .tools.logger import get_logger
 from .tools.manifest import get_translatable_addons
@@ -32,6 +32,14 @@ def get_project_slug(project_name):
     return project_slug
 
 
+def project_exists(project_name):
+    try:
+        Project.objects.get(name=project_name)
+        return True
+    except Project.DoesNotExist:
+        return False
+
+
 def create_project(
         repository, branch, tmpl_component_slug,
         addons_subdirectory=None):
@@ -39,11 +47,11 @@ def create_project(
 
     logger.info("Project name is %s", project_name)
 
-    try:
-        Project.objects.get(name=project_name)
+    if project_exists(project_name):
         logger.info("Project %s already exists.", project_name)
-    except Project.DoesNotExist:
-        repo_dir = git_clone(repository, branch)
+        return
+
+    with temp_git_clone(repository, branch) as repo_dir:
         addons = get_translatable_addons(
             repo_dir, addons_subdirectory=addons_subdirectory)
 
