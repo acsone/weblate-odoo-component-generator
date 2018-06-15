@@ -11,13 +11,13 @@ import giturlparse
 @contextlib.contextmanager
 def temp_git_clone(repository, branch):
     repository_https = giturlparse.parse(repository).url2https
-    with tempfile.TemporaryDirectory() as td:
+    with tempfile.TemporaryDirectory() as repo_dir:
         subprocess.check_call([
             'git',
             'clone',
             repository_https,
             '-b', branch,
             '--depth', '1',
-            td.name,
+            repo_dir,
         ])
-        yield td.name
+        yield repo_dir
