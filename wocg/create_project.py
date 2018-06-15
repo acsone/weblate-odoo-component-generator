@@ -4,7 +4,7 @@
 
 import os
 import re
-from urlparse import urljoin
+import urllib
 
 import click
 import giturlparse
@@ -90,7 +90,10 @@ def get_new_component(
         po_file_mask = os.path.join(addons_subdirectory, po_file_mask)
         pot_filepath = os.path.join(addons_subdirectory, pot_filepath)
     if git_export_base_url:
-        git_export = urljoin(git_export_base_url, 'git/' + project.name)
+        git_export = urllib.parse.urljoin(
+            git_export_base_url,
+            'git/' + project.name,
+        )
     tmpl_component = Component.objects.get(slug=tmpl_component_slug)
     addons_to_install = Addon.objects.filter(component=tmpl_component)
     parsed_repository_uri = giturlparse.parse(repository)
