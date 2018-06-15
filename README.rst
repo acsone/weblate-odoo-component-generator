@@ -65,3 +65,12 @@ Roadmap
 =======
 
 * These scripts could be converted to weblate 3 addons.
+
+Contributors
+============
+
+* Adrien Peiffer <adrien.peiffer@acsone.eu>
+* Benjamin Willig <benjamin.willig@acsone.eu>
+* Stéphane Bidoul <stephane.bidoul@acsone.eu>
+
+This project has been originally funded by ACSONE SA/NV (https://acsone.eu/).
