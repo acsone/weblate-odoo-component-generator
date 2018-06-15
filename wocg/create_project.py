@@ -54,7 +54,11 @@ def create_project(
 
         logger.info("Going to create Project %s.", project_name)
         addon_name = next(iter(addons.keys()))
-        new_project = get_new_project(project_name, repository)
+        new_project = get_new_project(
+            project_name,
+            repository,
+            tmpl_component_slug,
+        )
 
         try:
             get_new_component(
@@ -67,13 +71,16 @@ def create_project(
             new_project.delete()
 
 
-def get_new_project(project_name, repository):
+def get_new_project(project_name, repository, tmpl_component_slug):
+    tmpl_component = Component.objects.get(slug=tmpl_component_slug)
     new_project = Project()
     new_project.name = project_name
     new_project.slug = get_project_slug(project_name)
     new_project.web = giturlparse.parse(repository).url2https
-    new_project.enable_review = True
-    new_project.set_translation_team = False
+    new_project.enable_review = \
+        tmpl_component.project.enable_review
+    new_project.set_translation_team = \
+        tmpl_component.project.set_translation_team
     new_project.save()
     return new_project
 
