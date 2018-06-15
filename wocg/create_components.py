@@ -1,18 +1,21 @@
 # -*- coding: utf-8 -*-
 # Copyright 2018 ACSONE SA/NV (<http://acsone.eu>)
+# License GPL-3.0 or later (http://www.gnu.org/licenses/gpl.html).
 
-from .tools.manifest import get_translatable_addons
-from .tools.helper import get_component_name, get_component_slug
-from .tools.logger import get_logger
-
-import click
 import os
 import re
+
+import click
+
 import django
 django.setup()
 
 from django.conf import settings
 from weblate.trans.models import Project
+
+from .tools.manifest import get_translatable_addons
+from .tools.helper import get_component_name, get_component_slug
+from .tools.logger import get_logger
 
 
 GIT_URL_RE = re.compile(r"git@.*:.*/.*")
@@ -42,9 +45,14 @@ def _get_all_components_slug(project):
 @click.command()
 def main():
     """
-    This program create the missing components for all projects in Weblate.
-    A component will be created only if the related addon is installable
-    and contains a .pot file.
+    This program creates the missing components for all existing Odoo
+    projects in Weblate. A component will be created only if the
+    related addon is installable and contains a .pot file.
+
+    The projects must have been created before running this programe,
+    as well as a first component for each  project in order to provide
+    vcs information. Subsequent components are linked to the vcs of the
+    first component.
     """
     all_projects = Project.objects.prefetch_related('source_language')
 
@@ -56,10 +64,14 @@ def main():
         main_component = _get_main_component(project)
         if not main_component:
             logger.info(
-                'Main component not found for project %s' % project.name)
+                'Main component not found for project %s',
+                project.name,
+            )
             continue
-        logger.info('Main component found for project %s : %s' % (
-            project.name, main_component.name))
+        logger.info(
+            'Main component found for project %s : %s',
+            project.name, main_component.name,
+        )
         repo = 'weblate://%s/%s' % (project.slug, main_component.slug)
         logger.info("*** %s", main_component.filemask)
         mo = FILEMASK_RE.match(main_component.filemask)
@@ -76,17 +88,19 @@ def main():
         addons = get_translatable_addons(addons_dir_path)
         main_filemask = main_component.filemask
         main_new_base = main_component.new_base
-        for addon in addons.keys():
+        for addon in addons:
             addon_component_name = get_component_name(project, addon)
             addon_component_slug = get_component_slug(project, addon)
             if addon_component_slug in existing_components_slug:
-                logger.info('component already exist for addon %s : %s' % (
-                    addon, addon_component_slug))
+                logger.info(
+                    'component already exist for addon %s : %s',
+                    addon, addon_component_slug,
+                )
                 continue
-            logger.info('Begin generation for addon %s' % addon)
+            logger.info('Begin generation for addon %s', addon)
             filemask = main_filemask.replace(main_component_addon_name, addon)
             new_base = main_new_base.replace(main_component_addon_name, addon)
-            logger.info('New filemask %s' % filemask)
+            logger.info('New filemask %s', filemask)
             new_component = main_component
             new_component.pk = None
             new_component.git_export = ''
@@ -97,4 +111,3 @@ def main():
             new_component.new_base = new_base
             new_component.repo = repo
             new_component.save()
-    exit(0)

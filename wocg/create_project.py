@@ -1,20 +1,23 @@
 # -*- coding: utf-8 -*-
 # Copyright 2018 ACSONE SA/NV (<http://acsone.eu>)
+# License GPL-3.0 or later (http://www.gnu.org/licenses/gpl.html).
 
-from wocg.tools.git_utils import git_clone
-from wocg.tools.helper import get_component_slug, get_component_name
-from wocg.tools.logger import get_logger
-from wocg.tools.manifest import get_translatable_addons
+import os
+import re
 
 import click
 import giturlparse
-import os
-import re
+
 import django
 django.setup()
 
 from weblate.addons.models import Addon
 from weblate.trans.models import Project, Component
+
+from .tools.git_utils import git_clone
+from .tools.helper import get_component_slug, get_component_name
+from .tools.logger import get_logger
+from .tools.manifest import get_translatable_addons
 
 logger = get_logger()
 
@@ -33,21 +36,21 @@ def create_project(
         repository, branch, tmpl_component_slug, addons_subdirectory=None):
     project_name = get_project_name(repository, branch)
 
-    logger.info("Project name is %s" % project_name)
+    logger.info("Project name is %s", project_name)
 
     try:
         Project.objects.get(name=project_name)
-        logger.info("Project %s already exists." % project_name)
+        logger.info("Project %s already exists.", project_name)
     except Project.DoesNotExist:
         repo_dir = git_clone(repository, branch)
         addons = get_translatable_addons(
             repo_dir, addons_subdirectory=addons_subdirectory)
 
         if not addons:
-            logger.info("No addons found in %s %s" % (repository, branch))
+            logger.info("No addons found in %s %s", repository, branch)
             return
 
-        logger.info("Going to create Project %s." % project_name)
+        logger.info("Going to create Project %s.", project_name)
         addon_name = next(iter(addons.keys()))
         new_project = get_new_project(project_name, repository)
 
@@ -108,25 +111,30 @@ def get_new_component(
 @click.command()
 @click.option(
     '--repository', required=True,
-    help="ssh url to git repository",
+    help="Ssh url to git repository.",
 )
 @click.option(
     '--branch', required=True,
-    help="Target branch"
+    help="Target branch."
 )
 @click.option(
     '--tmpl-component-slug', required=True,
-    help="SLUG identifier for the template component"
+    help="Slug identifier for the template component."
 )
 @click.option(
     '--addons-subdirectory',
-    help="Addons directory"
+    help="Addons subdirectory, in case addons are not "
+         "at the root of the project (eg odoo/addons)."
 )
 def main(repository, branch, tmpl_component_slug, addons_subdirectory=None):
     """
-    This program initializes a weblate project based on git repository.
-    The Git repository should contains at least one installable addons
-    with a i18n repository containing the .pot file, otherwise it does nothing.
+    This program initializes a weblate project based on a git repository.
+
+    The git repository must contain at least one installable addon
+    with a i18n directory containing the .pot file, otherwise it does nothing.
+    A first component is created for one of these addons, based on the
+    provided component template. Subsequent components can be created
+    with wocg-create-components.
     """
     create_project(
         repository, branch, tmpl_component_slug,

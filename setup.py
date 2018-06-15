@@ -9,7 +9,7 @@ setup(
     name='weblate-odoo-component-generator',
     description='Weblate component generator for Odoo modules',
     long_description='\n'.join((
-        open('README.md').read(),
+        open('README.rst').read(),
     )),
     use_scm_version=True,
     packages=find_packages(),
