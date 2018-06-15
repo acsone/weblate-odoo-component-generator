@@ -40,6 +40,9 @@ wocg-create-project
                                 [required]
     --addons-subdirectory TEXT  Addons subdirectory, in case addons are not at
                                 the root of the project (eg odoo/addons).
+    --git-export-base-url       Base Url for 'Exported repository URL'
+                                component attribute. If not provided, the
+                                weblate default is used.
     --help                      Show this message and exit.
 
 wocg-create-components
