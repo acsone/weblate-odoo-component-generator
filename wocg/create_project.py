@@ -42,7 +42,7 @@ def project_exists(project_name):
 
 def create_project(
         repository, branch, tmpl_component_slug,
-        addons_subdirectory=None):
+        addons_subdirectory=None, use_ssh=False):
     project_name = get_project_name(repository, branch)
 
     logger.info("Project name is %s", project_name)
@@ -51,7 +51,7 @@ def create_project(
         logger.info("Project %s already exists.", project_name)
         return
 
-    with temp_git_clone(repository, branch) as repo_dir:
+    with temp_git_clone(repository, branch, use_ssh=use_ssh) as repo_dir:
         addons = get_translatable_addons(
             repo_dir, addons_subdirectory=addons_subdirectory)
 
@@ -154,9 +154,14 @@ def get_new_component(
     help="Addons subdirectory, in case addons are not "
          "at the root of the project (eg odoo/addons)."
 )
+@click.option(
+    '--use-ssh',
+    is_flag=True,
+    help="Use SSH instead HTTP to clone the repository."
+)
 def main(
         repository, branch, tmpl_component_slug,
-        addons_subdirectory=None):
+        addons_subdirectory=None, use_ssh=False):
     """
     This program initializes a weblate project based on a git repository.
 
@@ -169,4 +174,5 @@ def main(
     create_project(
         repository, branch, tmpl_component_slug,
         addons_subdirectory=addons_subdirectory,
+        use_ssh=use_ssh,
     )
