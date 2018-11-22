@@ -9,11 +9,11 @@ import click
 import giturlparse
 
 import django
-django.setup()
+django.setup()  # noqa: E402
 
-from weblate.addons.models import Addon
 from weblate.trans.models import Project, Component
 
+from .tools.component import copy_installed_addons
 from .tools.git_utils import temp_git_clone
 from .tools.helper import get_component_slug, get_component_name
 from .tools.logger import get_logger
@@ -112,7 +112,7 @@ def get_new_component(
         po_file_mask = os.path.join(addons_subdirectory, po_file_mask)
         pot_filepath = os.path.join(addons_subdirectory, pot_filepath)
     tmpl_component = Component.objects.get(slug=tmpl_component_slug)
-    addons_to_install = Addon.objects.filter(component=tmpl_component)
+    tmpl_component_pk = tmpl_component.pk
     parsed_repository_uri = giturlparse.parse(repository)
 
     new_component = tmpl_component
@@ -128,11 +128,7 @@ def get_new_component(
     new_component.file_format = 'po'
     new_component.locked = False
     new_component.save(force_insert=True)
-
-    for addon_to_install in addons_to_install:
-        addon_to_install.pk = None
-        addon_to_install.component = new_component
-        addon_to_install.save()
+    copy_installed_addons(tmpl_component_pk, new_component)
     return new_component
 
 
