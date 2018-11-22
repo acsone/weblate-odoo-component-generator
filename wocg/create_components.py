@@ -8,11 +8,12 @@ import re
 import click
 
 import django
-django.setup()
+django.setup()  # noqa: E402
 
 from django.conf import settings
 from weblate.trans.models import Project
 
+from .tools.component import copy_installed_addons
 from .tools.manifest import get_translatable_addons
 from .tools.helper import get_component_name, get_component_slug
 from .tools.logger import get_logger
@@ -80,6 +81,7 @@ def main():
                         "ADDONS_DIR_PATH/MODULE_NAME/*.po")
             continue
         groups = mo.groupdict()
+        main_component_pk = main_component.pk
         main_component_addon_name = groups['addon_name']
         addons_dir = groups['addons_dir'] or '.'
         addons_dir_path = os.path.join(
@@ -112,3 +114,5 @@ def main():
             new_component.repo = repo
             new_component.locked = False
             new_component.save()
+
+            copy_installed_addons(main_component_pk, new_component)
