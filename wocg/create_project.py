@@ -90,8 +90,8 @@ def get_new_project(project_name, repository, tmpl_component_slug):
         tmpl_component.project.enable_review
     new_project.enable_hooks = \
         tmpl_component.project.enable_hooks
-    new_project.set_translation_team = \
-        tmpl_component.project.set_translation_team
+    new_project.set_language_team = \
+        tmpl_component.project.set_language_team
     new_project.source_language = \
         tmpl_component.project.source_language
     new_project.instructions = \
