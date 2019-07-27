@@ -14,3 +14,4 @@ def copy_installed_addons(src_component_pk, dest_component):
         addon_to_install.pk = None
         addon_to_install.component = dest_component
         addon_to_install.save()
+        addon_to_install.addon.post_configure()
