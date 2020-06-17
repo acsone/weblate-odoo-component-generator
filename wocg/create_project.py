@@ -72,6 +72,7 @@ def create_project(
                 new_project, repository, branch, addon_name,
                 tmpl_component_slug,
                 addons_subdirectory=addons_subdirectory,
+                use_ssh=use_ssh,
             )
         except Exception as e:
             logger.exception(e)
@@ -104,7 +105,7 @@ def get_new_project(project_name, repository, tmpl_component_slug):
 
 def get_new_component(
         project, repository, branch, addon_name, tmpl_component_slug,
-        addons_subdirectory=None):
+        addons_subdirectory=None, use_ssh=False):
     po_file_mask = '{}/i18n/*.po'.format(addon_name)
     pot_filepath = '{addon_name}/i18n/{addon_name}.pot'.format(
         addon_name=addon_name)
@@ -115,13 +116,15 @@ def get_new_component(
     tmpl_component_pk = tmpl_component.pk
     parsed_repository_uri = giturlparse.parse(repository)
 
+    repo_url = use_ssh and parsed_repository_uri.url2ssh or repository
+
     new_component = tmpl_component
     new_component.pk = None
     new_component.project = project
     new_component.name = get_component_name(project, addon_name)
     new_component.slug = get_component_slug(project, addon_name)
-    new_component.repo = parsed_repository_uri.url2ssh
-    new_component.push = parsed_repository_uri.url2ssh
+    new_component.repo = repo_url
+    new_component.push = repo_url
     new_component.branch = branch
     new_component.filemask = po_file_mask
     new_component.new_base = pot_filepath
