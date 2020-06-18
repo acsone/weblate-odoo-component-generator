@@ -19,7 +19,7 @@ from .tools.helper import get_component_name, get_component_slug
 from .tools.logger import get_logger
 
 
-GIT_URL_RE = re.compile(r"git@.*:.*/.*")
+GIT_URL_RE = re.compile(r"(git@.*:.*/.*)|(https://.*)")
 
 FILEMASK_RE = re.compile(
     r"^(?P<addons_dir>.*/)?(?P<addon_name>.*?)/i18n/\*\.po$")
