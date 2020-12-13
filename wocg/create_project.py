@@ -84,20 +84,17 @@ def get_new_project(project_name, repository, tmpl_component_slug):
     new_project.name = project_name
     new_project.slug = get_project_slug(project_name)
     new_project.web = giturlparse.parse(repository).url2https
-    new_project.access_control = \
-        tmpl_component.project.access_control
-    new_project.enable_review = \
-        tmpl_component.project.enable_review
-    new_project.enable_hooks = \
-        tmpl_component.project.enable_hooks
-    new_project.set_language_team = \
-        tmpl_component.project.set_language_team
-    new_project.source_language = \
-        tmpl_component.project.source_language
-    new_project.instructions = \
-        tmpl_component.project.instructions
-    new_project.mail = \
-        tmpl_component.project.mail
+    new_project.mail = tmpl_component.project.mail
+    new_project.instructions = tmpl_component.project.instructions
+    new_project.set_language_team = tmpl_component.project.set_language_team
+    new_project.use_shared_tm = tmpl_component.project.use_shared_tm
+    new_project.use_shared_tm = tmpl_component.project.use_shared_tm
+    new_project.contribute_shared_tm = tmpl_component.project.contribute_shared_tm
+    new_project.access_control = tmpl_component.project.access_control
+    new_project.translation_review = tmpl_component.project.translation_review
+    new_project.source_review = tmpl_component.project.source_review
+    new_project.enable_hooks = tmpl_component.project.enable_hooks
+    new_project.language_aliases = tmpl_component.project.language_aliases
     new_project.save()
     return new_project
 
