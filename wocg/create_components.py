@@ -55,7 +55,7 @@ def main():
     vcs information. Subsequent components are linked to the vcs of the
     first component.
     """
-    all_projects = Project.objects.prefetch_related('source_language')
+    all_projects = Project.objects.all()
 
     data_dir = settings.DATA_DIR
     svn_dir = os.path.join(data_dir, 'vcs')
