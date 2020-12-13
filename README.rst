@@ -4,6 +4,8 @@ weblate-odoo-component-generator
 
 Generate weblate projects and components for Odoo projects.
 
+These scripts rely on weblate internales and are compatible with weblate 4.3.
+
 Installation
 ============
 
@@ -60,11 +62,6 @@ wocg-create-components
 
   Options:
     --help  Show this message and exit.
-
-Roadmap
-=======
-
-* These scripts could be converted to weblate 3 addons.
 
 Contributors
 ============
