@@ -84,7 +84,6 @@ def get_new_project(project_name, repository, tmpl_component_slug):
     new_project.name = project_name
     new_project.slug = get_project_slug(project_name)
     new_project.web = giturlparse.parse(repository).url2https
-    new_project.mail = tmpl_component.project.mail
     new_project.instructions = tmpl_component.project.instructions
     new_project.set_language_team = tmpl_component.project.set_language_team
     new_project.use_shared_tm = tmpl_component.project.use_shared_tm
