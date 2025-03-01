@@ -28,9 +28,6 @@ setup(
         'Programming Language :: Python',
         'Framework :: Django',
     ],
-    setup_requires=[
-        'setuptools-scm',
-    ],
     entry_points='''
         [console_scripts]
         wocg-create-components=wocg.create_components:main
