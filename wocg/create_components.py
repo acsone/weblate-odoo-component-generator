@@ -99,6 +99,12 @@ def main():
                     addon, addon_component_slug,
                 )
                 continue
+            if len(addon_component_name) > 100 or len(addon_component_slug) > 100:
+                logger.info(
+                    'component name or slug too long for addon %s : %s / %s',
+                    addon, addon_component_name, addon_component_slug,
+                )
+                continue
             logger.info('Begin generation for addon %s', addon)
             filemask = main_filemask.replace(main_component_addon_name, addon)
             new_base = main_new_base.replace(main_component_addon_name, addon)
