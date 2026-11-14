@@ -14,7 +14,7 @@ setup(
     use_scm_version=True,
     packages=find_packages(),
     install_requires=[
-        "weblate==5.15.*",
+        "weblate==2026.11.*",
         'click',
         'giturlparse',
     ],
