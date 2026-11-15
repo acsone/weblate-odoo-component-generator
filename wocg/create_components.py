@@ -13,7 +13,6 @@ django.setup()  # noqa: E402
 from django.conf import settings
 from weblate.trans.models import Project
 
-from .tools.component import copy_installed_addons
 from .tools.manifest import get_translatable_addons
 from .tools.helper import get_component_name, get_component_slug
 from .tools.logger import get_logger
@@ -120,5 +119,3 @@ def main():
             new_component.repo = repo
             new_component.locked = False
             new_component.save()
-
-            copy_installed_addons(main_component_pk, new_component)
